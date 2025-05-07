@@ -1,4 +1,5 @@
 // src/pages/ThankYou.tsx
+import React from 'react';
 const ThankYou = () => {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center text-center p-10">

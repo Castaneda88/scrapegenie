@@ -1,4 +1,5 @@
 // src/pages/Dashboard.tsx
+import React from 'react';
 import { useState } from 'react';
 import { getAuth, signOut } from 'firebase/auth';
 

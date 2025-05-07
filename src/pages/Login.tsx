@@ -1,4 +1,5 @@
 // src/pages/Login.tsx
+import React from 'react';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
