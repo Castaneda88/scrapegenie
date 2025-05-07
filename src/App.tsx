@@ -1,8 +1,8 @@
 // src/App.tsx
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './lib/firebase';
 import LandingPage from './pages/LandingPage';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -14,11 +14,11 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const auth = getAuth();
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
     });
+    return () => unsubscribe();
   }, []);
 
   if (loading) return <div className="text-center p-10">Loading...</div>;
