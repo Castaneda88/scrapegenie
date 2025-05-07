@@ -7,9 +7,6 @@ import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
 import Subscribe from './pages/Subscribe';
 import ThankYou from './pages/ThankYou';
-import { initFirebase } from './lib/firebase';
-
-initFirebase();
 
 function App() {
   const [user, setUser] = useState(null);
