@@ -5,10 +5,14 @@ const { doc, getDoc, setDoc, serverTimestamp } = require('firebase/firestore');
 const cheerio = require('cheerio');
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') return res.status(405).end();
-  const { url, uid } = req.body;
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-  if (!uid) return res.status(401).json({ error: 'Unauthorized' });
+  const { url, uid } = req.body;
+  if (!uid || !url) {
+    return res.status(400).json({ error: 'Missing uid or url' });
+  }
 
   try {
     const userRef = doc(db, 'users', uid);
@@ -21,7 +25,6 @@ module.exports = async function handler(req, res) {
     }
 
     const userData = userSnap.data();
-
     const trialStartRaw = userData.trialStart?.toDate?.();
     const isSubscribed = userData.subscribed;
 
@@ -33,6 +36,7 @@ module.exports = async function handler(req, res) {
       return res.status(403).json({ error: 'Trial expired. Please subscribe.' });
     }
 
+    // Scraping logic
     const listingHTML = await axios.get(`http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(url)}`);
     const $ = cheerio.load(listingHTML.data);
     const productLinks = [];
