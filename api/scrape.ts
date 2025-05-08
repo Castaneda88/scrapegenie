@@ -22,8 +22,7 @@ export default async function handler(req, res) {
 
     const userData = userSnap.data();
 
-    const trialStart = userData.trialStart?.toDate?.();
-    const diffMs = trialStart ? now.getTime() - trialStart.getTime() : 0;
+    const diffMs = trialStart instanceof Date ? now.getTime() - trialStart.getTime() : 0;
     const isSubscribed = userData.subscribed;
 
     if (!isSubscribed && trialStart) {
