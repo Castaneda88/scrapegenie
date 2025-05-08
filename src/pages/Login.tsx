@@ -1,12 +1,12 @@
 // src/pages/Login.tsx
 import React from 'react';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../lib/firebase.client';
 
 const Login = () => {
   const navigate = useNavigate();
   const loginWithGoogle = async () => {
-    const auth = getAuth();
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
     navigate('/app');
