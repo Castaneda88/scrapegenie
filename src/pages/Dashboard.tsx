@@ -13,7 +13,7 @@ const Dashboard = ({ user }) => {
       alert('You must be signed in to scrape.');
       return;
     }
-  
+
     setLoading(true);
     try {
       const res = await fetch('/api/scrape', {
@@ -21,12 +21,15 @@ const Dashboard = ({ user }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url, uid: user.uid })
       });
-  
+
+      const contentType = res.headers.get('content-type');
       if (!res.ok) {
-        const { error } = await res.json();
-        throw new Error(error || 'Scrape failed');
+        const errorText = contentType?.includes('application/json')
+          ? (await res.json()).error
+          : await res.text();
+        throw new Error(errorText || 'Scrape failed');
       }
-  
+
       const data = await res.json();
       setResults(data.items);
     } catch (err) {
