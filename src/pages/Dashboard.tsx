@@ -9,15 +9,32 @@ const Dashboard = ({ user }) => {
   const [loading, setLoading] = useState(false);
 
   const handleScrape = async () => {
+    if (!user?.uid) {
+      alert('You must be signed in to scrape.');
+      return;
+    }
+  
     setLoading(true);
-    const res = await fetch('/api/scrape', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, uid }),
-    });
-    const data = await res.json();
-    setResults(data.items);
-    setLoading(false);
+    try {
+      const res = await fetch('/api/scrape', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, uid: user.uid })
+      });
+  
+      if (!res.ok) {
+        const { error } = await res.json();
+        throw new Error(error || 'Scrape failed');
+      }
+  
+      const data = await res.json();
+      setResults(data.items);
+    } catch (err) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const downloadCSV = () => {
