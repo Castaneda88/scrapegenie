@@ -21,17 +21,18 @@ export default async function handler(req, res) {
     }
 
     const userData = userSnap.data();
-
-    const diffMs = trialStart instanceof Date ? now.getTime() - trialStart.getTime() : 0;
+    
+    const trialStartRaw = userData.trialStart?.toDate?.();
     const isSubscribed = userData.subscribed;
-
-    if (!isSubscribed && trialStart) {
-      const diffMs = now - trialStart;
-      const diffDays = diffMs / (1000 * 60 * 60 * 24);
-      if (diffDays > 3) {
-        return res.status(403).json({ error: 'Trial expired. Please subscribe.' });
-      }
+    
+    const trialStart = trialStartRaw instanceof Date ? trialStartRaw : null;
+    const diffMs = trialStart ? now.getTime() - trialStart.getTime() : 0;
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    
+    if (!isSubscribed && diffDays > 3) {
+      return res.status(403).json({ error: 'Trial expired. Please subscribe.' });
     }
+    
 
     // Step 1: Get HTML of listing page
     const listingHTML = await axios.get(`http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(url)}`);
